@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Ulam Spiral</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<style>
+			body {
+				height: 100%;
+				width: 100%;
+				overflow: hidden;
+			}
+			.pixel {
+				position: absolute;
+				width: 3px;
+				height: 3px;
+				background: black;
+				border-radius: 50%;
+				visibility: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<script async defer>
+			const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+			let centerX = window.innerWidth / 2;
+			let centerY = window.innerHeight / 2;
+			const DIRECTIONS = [
+				{ x: 3, y: 0 },
+				{ x: 0, y: -3 },
+				{ x: -3, y: 0 },
+				{ x: 0, y: 3 },
+			];
+			let counter = 1;
+			let counterChanger = 0;
+			let pixelNumber = 1;
+			let i = 0;
+			const createPoint = (x, y, val) => {
+				const pixel = document.createElement("div");
+				pixel.className = "pixel";
+				pixel.style.top = y;
+				pixel.style.left = x;
+				pixel.id = val;
+				document.body.appendChild(pixel);
+			};
+			const isPrime = (num) => {
+				if (num < 2) {
+					return false;
+				}
+				let prime = true;
+				for (i = 2; i <= Math.sqrt(num); i++) {
+					if (num % i === 0) {
+						prime = false;
+						break;
+					}
+				}
+				return prime;
+			};
+			//centerX <= window.innerWidth && centerY <= window.innerHeight, use this or use i < n for faster render
+			while (centerX <= window.innerWidth || centerY <= window.innerHeight) {
+				if (counterChanger === 2) {
+					counter += 1;
+					counterChanger = 0;
+				}
+				counterChanger += 1;
+				for (j = 0; j < counter; j++) {
+					createPoint(`${centerX}px`, `${centerY}px`, pixelNumber);
+					centerX += DIRECTIONS[i % 4].x;
+					centerY += DIRECTIONS[i % 4].y;
+					pixelNumber += 1;
+				}
+				i += 1;
+			}
+			const points = [...document.getElementsByTagName("div")];
+			const showPoints = async () => {
+				for (k = 0; k < points.length; k++) {
+					if (isPrime(parseInt(points[k].id))) {
+						points[k].style.visibility = "visible";
+						//await sleep(1); // uncomment this and modify ms for animation
+					}
+				}
+			};
+			showPoints();
+		</script>
+	</body>
+</html>
